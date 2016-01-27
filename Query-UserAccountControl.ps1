@@ -6,12 +6,16 @@ Name:           Query-UserAccountControl.ps1
 Description:    Exports an individual CSV for each UAC Flag all User and 
                 Computer accounts. Assists in identifying accounts with 
                 specific configurations such as Kerberos Delegations.
-Usage:          .\Query-UserAccountControl.ps1
+Usage:          .\Query-UserAccountControl.ps1 [-Server <domaincontrollerfqdn>]
+                .\Query-UserAccountControl.ps1 -Server "dc1.contoso.com"
                 Simply execute the script in the folder you wish to generate 
                 the .CSV files into. Results will only include accounts the 
                 executing user has privileges to read the userAccountControl
-                attribute of.
-Date:           1.0 - Initial Release - January 27 2016 - Russell Tomkins
+                attribute of. 
+                If the server is in another domain, the calling user must also
+                have privileges to query that domain. 
+Date:           1.0 - 27-01-2016 - RT - Initial Release
+                1.1 - 27-01-2016 - RT - Minor Updates
 -------------------------------------------------------------------------------
 Disclaimer
 The sample scripts are not supported under any Microsoft standard support 
@@ -31,14 +35,19 @@ possibility of such damages.
 # -----------------------------------------------------------------------------
 # Begin Main Script
 # -----------------------------------------------------------------------------
-
+# Prepare Variables
+Param (
+        [parameter(Mandatory=$false,Position=0)][String]$Server = "localhost")
+               
 # Build the Lookup HashTable. 
-# More details can be found here https://support.microsoft.com/en-us/kb/305144
+# More details can be found here 
+# https://msdn.microsoft.com/en-us/library/ms680832(v=vs.85).aspx
 
 $UACLookUp = @{1 = "SCRIPT|0x0001";
                 2 = "ACCOUNTDISABLE|0x0002";
                 8 = "HOMEDIR_REQUIRED|0x0008";
                 16 = "LOCKOUT|0x0010";
+                32 = "PASSWD_NOTREQD|0x0020";
                 64 = "PASSWD_CANT_CHANGE|0x0040";
                 128 = "ENCRYPTED_TEXT_PWD_ALLOWED|0x0080";
                 256 = "TEMP_DUPLICATE_ACCOUNT|0x0100";
@@ -67,8 +76,8 @@ ForEach($Value in $UACLookUp.Keys){
 	$Properties = "useraccountcontrol","msDS-LastSuccessfulInteractiveLogonTime","lastLogonTimestamp"
 
 	# Grab the details for both User and Computer Accounts and Output to CSV
-	Get-ADUser -Filter $Filter -Properties $Properties| Export-CSV -NoTypeInformation "U-$FileName.csv"
-    Get-ADComputer -Filter $Filter -Properties $Properties| Export-CSV -NoTypeInformation "C-$FileName.csv"
+	Get-ADUser -Server $Server -Filter $Filter -Properties $Properties| Export-CSV -NoTypeInformation "U-$FileName.csv"
+    Get-ADComputer -Server $Server -Filter $Filter -Properties $Properties| Export-CSV -NoTypeInformation "C-$FileName.csv"
 } # Process the Next UAC Value
 
 # -----------------------------------------------------------------------------
