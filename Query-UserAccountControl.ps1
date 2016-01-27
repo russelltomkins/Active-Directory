@@ -41,7 +41,7 @@ Param (
                
 # Build the Lookup HashTable. 
 # More details can be found here 
-# https://msdn.microsoft.com/en-us/library/ms680832(v=vs.85).aspx
+# https://msdn.microsoft.com/en-us/library/aa772300(v=vs.85).aspx
 
 $UACLookUp = @{1 = "SCRIPT|0x0001";
                 2 = "ACCOUNTDISABLE|0x0002";
