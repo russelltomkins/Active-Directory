@@ -19,7 +19,8 @@ Usage:          .\Query-InsecureLDAPBinds.ps1 [-ComputerName <DomainController>]
                 the diagnostic logging enabled. By default, the script will 
                 return the past 24 hours worth of events. You can increase or 
                 decrease this value as required
-Date:           1.0 - Initial Release - January 27 2016 - Russell Tomkins
+Date:           1.0 - 27-01-2016 Russell Tomkins - Initial Release
+                1.1 - 27-01-2016 Russell Tomkins - Removed Type Info from CSV   
 -------------------------------------------------------------------------------
 Disclaimer
 The sample scripts are not supported under any Microsoft standard support 
@@ -77,7 +78,7 @@ ForEach ($Event in $Events) {
 }
 # Dump it all out to a CSV.
 Write-Host $InsecureLDAPBinds.Count "records saved to .\InsecureLDAPBinds.csv for Domain Controller" $ComputerName
-$InsecureLDAPBinds | Export-CSV .\InsecureLDAPBinds.csv
+$InsecureLDAPBinds | Export-CSV -NoTypeInformation .\InsecureLDAPBinds.csv
 # -----------------------------------------------------------------------------
 # End of Main Script
 # -----------------------------------------------------------------------------
