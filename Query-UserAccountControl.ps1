@@ -5,7 +5,12 @@ Microsoft Premier Field Engineer
 Name:           Query-UserAccountControl.ps1
 Description:    Exports an individual CSV for each UAC Flag all User and 
                 Computer accounts. Assists in identifying accounts with 
-                specific configurations such as Kerberos Delegations. 
+                specific configurations such as Kerberos Delegations.
+Usage:          .\Query-UserAccountControl.ps1
+                Simply execute the script in the folder you wish to generate 
+                the .CSV files into. Results will only include accounts the 
+                executing user has privileges to read the userAccountControl
+                attribute of.
 Date:           1.0 - Initial Release - January 27 2016 - Russell Tomkins
 -------------------------------------------------------------------------------
 Disclaimer
