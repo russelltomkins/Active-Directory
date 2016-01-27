@@ -14,7 +14,7 @@ Description:    Exports a CSV from the specified domain controller containing
                 https://technet.microsoft.com/en-us/library/dd941829(v=ws.10).aspx
                 
 Usage:          .\Query-InsecureLDAPBinds.ps1 [-ComputerName <DomainController>]
-                     [-Hours <Hours>
+                     [-Hours <Hours>]
                 Execute the script against the DomainController which has had
                 the diagnostic logging enabled. By default, the script will 
                 return the past 24 hours worth of events. You can increase or 
