@@ -12,7 +12,7 @@
   delegate credentials to other Kerberos enabled services
   
   Refer to this blog post for more details
-  http://blogs.technet.microsoft.com/russellt
+  https://blogs.technet.microsoft.com/russellt/2017/04/11/understanding-kerberos-delegation
 
   .EXAMPLE
   Query local Domain Controller foer Kerberos Delegations
