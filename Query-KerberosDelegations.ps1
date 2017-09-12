@@ -18,7 +18,7 @@
   Query local Domain Controller foer Kerberos Delegations
   .\Query-KerberosDelegations.ps1 
 
-.EXAMPLE
+  .EXAMPLE
   Query a remote Domain Controller for Kerberos Delegations 
   .\Query-KerberosDelegations.ps1 
 
@@ -50,15 +50,12 @@
 [CmdletBinding()]
     Param (
     [Parameter(Mandatory=$false)][ValidateNotNullOrEmpty()][String]$Server="localhost")
-
 # Initialize the Output object, AD attributes and Get-ADObject Queries (I know, to 
 # lazy to craft and ldap filter)
 $Rows = @()
-$Properties = "useraccountcontrol","msDS-LastSuccessfulInteractiveLogonTime","lastLogonTimestamp","msDS-
-
-AllowedToDelegateTo","SAMAccountName","servicePrincipalName"
-$Queries = @{	'Kerberos Unconstrained Delegation' ='(useraccountcontrol -band 524288)'; `
-		'Kerberos Constrained Delegation'='(msDS-AllowedToDelegateTo -like "*")'; `
+$Properties = "useraccountcontrol","msDS-LastSuccessfulInteractiveLogonTime","lastLogonTimestamp","msDS-AllowedToDelegateTo","SAMAccountName","servicePrincipalName"
+$Queries = @{	'Kerberos Only Unconstrained Delegation' ='(useraccountcontrol -band 524288)'; `
+		'Kerberos Only Constrained Delegation'='(msDS-AllowedToDelegateTo -like "*")'; `
 		'Any Authentication Protocol Constrained' = '(useraccountcontrol -band  "16777216") -and (msDS-AllowedToDelegateTo -like "*")'; `
 		'Any Authentication Protocol Unconstrained' = '(useraccountcontrol -band  "16777216") -and (msDS-AllowedToDelegateTo -notlike "*")'}
 
@@ -68,7 +65,7 @@ ForEach($Query in $Queries.Keys){
 		$Row = "" | Select Name,Type,DelegationType,SAMAccountName,SPN,TargetSPN,LastLogon,DN
 		$Row.Name = $Result.Name
 		$Row.SAMAccountName = $Result.SAMAccountName
-		$Row.SPN = $Result.servicePrincipalName
+		$Row.SPN = $Result.servicePrincipalName -Join "|"
 		$Row.Type = (Get-Culture).TextInfo.ToTitleCase($Result.ObjectClass)
 		$Row.DelegationType = $Query
 		If ($Result."msDS-AllowedToDelegateTo" -ne $Null){$Row.TargetSPN = $Result."msDS-AllowedToDelegateTo" -Join "|"}
@@ -80,12 +77,8 @@ ForEach($Query in $Queries.Keys){
 	}
 }
 # Spit it all out
-$Rows | Out-GridView
 $Rows | Export-CSV -NoTypeInformation ".\KerberosDelegation.csv"
 Write-Host $Rows.Count"Kerberos delegations written to .\KerberosDelegation.csv" -ForeGroundColor Green
-
 # -----------------------------------------------------------------------------
 # End of Script
 # -----------------------------------------------------------------------------
-
-
