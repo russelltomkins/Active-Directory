@@ -78,7 +78,7 @@ ForEach ($Event in $Events) {
 }
 # Dump it all out to a CSV.
 Write-Host $InsecureLDAPBinds.Count "records saved to .\InsecureLDAPBinds.csv for Domain Controller" $ComputerName
-$InsecureLDAPBinds | sort User -unique | Export-CSV -NoTypeInformation .\InsecureLDAPBinds.csv
+$InsecureLDAPBinds | sort-object User -unique | Export-CSV -NoTypeInformation .\InsecureLDAPBinds.csv
 # -----------------------------------------------------------------------------
 # End of Main Script
 # -----------------------------------------------------------------------------
