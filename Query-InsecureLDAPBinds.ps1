@@ -67,8 +67,8 @@ ForEach ($Event in $Events) {
 		}
 	
 	# Add Them To a Row in our Array
-	$Row = "" | select IPAddress,Port,User,BindType
-	$Row.IPAddress = $IPAddress
+	$Row = "" | select DNS,IPAddress,Port,User,BindType
+    	$Row.DNS = "" #we'll add that later, once it's filtered for uniquness
 	$Row.Port = $Port
 	$Row.User = $User
 	$Row.BindType = $BindType
@@ -76,9 +76,13 @@ ForEach ($Event in $Events) {
 	# Add the row to our Array
 	$InsecureLDAPBinds += $Row
 }
-# Dump it all out to a CSV.
-Write-Host $InsecureLDAPBinds.Count "records saved to .\InsecureLDAPBinds.csv for Domain Controller" $ComputerName
-$InsecureLDAPBinds | Export-CSV -NoTypeInformation .\InsecureLDAPBinds.csv
-# -----------------------------------------------------------------------------
+
+# filter output for unique hosts only ===
+$InsecureLDAPBinds  = $InsecureLDAPBinds | Sort-Object IPAddress -unique 
+# attempt to do DNS resolution
+$InsecureLDAPBinds | ForEach-Object {
+    $DNSName = [System.Net.Dns]::gethostentry($_.IPAddress).hostname
+    if ($DNSName ) {$_.DNS = $DNSName}
+} # -----------------------------------------------------------------------------
 # End of Main Script
 # -----------------------------------------------------------------------------
